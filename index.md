@@ -1,37 +1,68 @@
-## Welcome to GitHub Pages
+(function() {
+    clear();
+    const urls = [];
+    const titles = [];
+    const descriptions = [];
 
-You can use the [editor on GitHub](https://github.com/vctseo/serp-data.js/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
+    function uniq(value, index, self) { 
+        return self.indexOf(value) === index;
+    }
+    
+    const data = {};
+    
+    const u = '#rso > div > div > div > div > div > div.r > a';           
+    let found = document.querySelectorAll(u);       
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+    if (found.length > 0) {
+        found.forEach((f) => {
+            let text = f.href;                                                           
+            if (text) {
+                urls.push(text);
+            } else {
+                urls.push("");
+            }
+        });
+    }
 
-### Markdown
+    const t = '#rso > div > div > div > div > div > div.r > a > h3 > div';
+    found = document.querySelectorAll(t);
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+    if (found.length > 0) {
+        found.forEach((f) => {
+            let text = f.textContent;                                                           
+            if (text) {
+                titles.push(text);
+            } else {
+                titles.push("");
+            }
+        });
+    }
 
-```markdown
-Syntax highlighted code block
+    const d = '#rso > div > div > div > div > div > div.s > div > span';
+    found = document.querySelectorAll(d);
 
-# Header 1
-## Header 2
-### Header 3
+    if (found.length > 0) {
+        found.forEach((f) => {
+            let text = f.textContent;                                                           
+            if (text) {
+                descriptions.push(text);
+            } else {
+                descriptions.push("");
+            }
+        });
+    }
 
-- Bulleted
-- List
 
-1. Numbered
-2. List
+    const range = n => Array.from(Array(n).keys());
+    const result = [];
 
-**Bold** and _Italic_ and `Code` text
+    for (const position of range(urls.length)) {
+        const url = urls[position];
+        const title = titles[position];
+        const desc = descriptions[position];
+        result.push(`${position+1}\t"${url}"\t"${title}"\t"${desc}"`);
+    }
 
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/vctseo/serp-data.js/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+    const content = "position\turl\ttitle\tdescription\n" + result.join("\n");
+    console.log(content);
+})();
